@@ -1,0 +1,26 @@
+pool:
+  name: Sonarpool
+steps:
+- task: SonarSource.sonarqube.15B84CA1-B62F-4A2A-A403-89B77A063157.SonarQubePrepare@4
+  displayName: 'Prepare analysis on SonarQube'
+  inputs:
+    SonarQube: 
+    projectKey: testproject
+    projectName: testproject
+    extraProperties: |
+     # Additional properties that will be passed to the scanner, 
+     # Put one key=value per line, example:
+     # sonar.exclusions=**/*.bin
+     sonar.login=admin
+     sonar.password=admin
+
+- task: SonarSource.sonarqube.6D01813A-9589-4B15-8491-8164AEB38055.SonarQubeScannerMsBuildEnd@3
+  displayName: 'Run Code Analysis'
+  enabled: false
+
+- script: 'C:\sonarqube :SonarScanner.MSBuild.exe begin /k:"testproject" /d:sonar.host.url="http://51.143.160.230:9000" /d:sonar.login="admin"'
+  displayName: 'Command Line Script'
+
+- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+  displayName: 'Run Code Analysis'
+  enabled: false
